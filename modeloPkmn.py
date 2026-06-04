@@ -1,63 +1,56 @@
 """
-models.py – Clases Python que representan las entidades de la región Johto.
-Cada clase se construye a partir de un diccionario proveniente de la base de datos.
+modeloPkmn.py — Clase Pokemon y su función de conversión desde BD.
 """
 
+NIVEL_LEGENDARIO = 50
 
-# ──────────────────────────────────────────────────────────────────────────────
-# Pokémon
-# ──────────────────────────────────────────────────────────────────────────────
+TIPOS_POKEMON = [
+    "Agua", "Bicho", "Dragon", "Eléctrico", "Fantasma",
+    "Fuego", "Hielo", "Lucha", "Normal", "Planta",
+    "Psíquico", "Roca", "Tierra", "Veneno", "Volador",
+]
+
 
 class Pokemon:
-    TIPOS_EMBLEMA = {
-        'Fuego':     '🔥',
-        'Agua':      '💧',
-        'Planta':    '🌿',
-        'Eléctrico': '⚡',
-        'Psíquico':  '🔮',
-        'Normal':    '⭐',
-        'Roca':      '🪨',
-        'Tierra':    '🌍',
-        'Volador':   '🌬️',
-        'Bicho':     '🐛',
-        'Veneno':    '☠️',
-        'Fantasma':  '👻',
-        'Dragón':    '🐉',
-        'Hielo':     '❄️',
-        'Lucha':     '🥊',
-        'Acero':     '⚙️',
-    }
+    """Representa un espécimen Pokémon registrado en la Pokédex."""
 
-    def __init__(self, datos: dict):
-        self.id               = datos.get('id')
-        self.nombre_especie   = datos.get('nombre_especie', '')
-        self.tipo_principal   = datos.get('tipo_principal', '')
-        self.nivel            = datos.get('nivel', 1)
-        self.id_entrenador    = datos.get('id_entrenador')
-        self.nombre_entrenador = datos.get('nombre_entrenador', 'Sin entrenador')
+    def __init__(self, id, nombre_especie, tipo_principal, nivel, entrenador=None):
+        self.id = id
+        self.nombre_especie = nombre_especie
+        self.tipo_principal = tipo_principal or "Desconocido"
+        self.nivel = nivel or 1
+        self.entrenador = entrenador  # nombre del entrenador (string) o None
 
-    # ── Método 1: determina si el Pokémon es Legendario por su nivel ──────────
     def es_legendario(self) -> bool:
-        """Un Pokémon se considera 'Legendario' si su nivel supera 60."""
-        return self.nivel > 60
+        """Un Pokémon se considera legendario si supera el nivel umbral."""
+        return self.nivel >= NIVEL_LEGENDARIO
 
-    # ── Método 2: calcula la categoría de poder ───────────────────────────────
-    def categoria_poder(self) -> str:
-        """Devuelve una etiqueta de potencia según el nivel."""
-        if self.nivel <= 10:
-            return 'Novato'
-        elif self.nivel <= 30:
-            return 'En entrenamiento'
-        elif self.nivel <= 60:
-            return 'Veterano'
+    def categoria(self) -> str:
+        """Clasifica al Pokémon según su nivel de poder."""
+        if self.nivel < 10:
+            return "Cría"
+        elif self.nivel < 25:
+            return "En entrenamiento"
+        elif self.nivel < 50:
+            return "Experimentado"
+        elif self.nivel < 80:
+            return "⚡ Élite"
         else:
-            return '⭐ Estrella'
+            return "🌟 Legendario"
 
-    # ── Método 3: devuelve el emoji del tipo ─────────────────────────────────
-    def emoji_tipo(self) -> str:
-        return self.TIPOS_EMBLEMA.get(self.tipo_principal, '❓')
+    def esta_libre(self) -> bool:
+        """Devuelve True si el Pokémon no pertenece a ningún entrenador."""
+        return self.entrenador is None
 
     def __repr__(self):
-        return f"<Pokemon {self.nombre_especie} Nv.{self.nivel} ({self.tipo_principal})>"
+        return f"Pokemon({self.nombre_especie}, nivel={self.nivel}, tipo={self.tipo_principal})"
 
 
+def filas_a_pokemon(filas: list) -> list:
+    """Convierte una lista de tuplas de BD en objetos Pokemon.
+    Espera columnas: id, nombre_especie, tipo_principal, nivel, entrenador_nombre
+    """
+    return [
+        Pokemon(id=f[0], nombre_especie=f[1], tipo_principal=f[2], nivel=f[3], entrenador=f[4])
+        for f in filas
+    ]

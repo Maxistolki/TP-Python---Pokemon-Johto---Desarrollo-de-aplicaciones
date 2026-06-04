@@ -1,36 +1,43 @@
+"""
+modeloEntrenador.py — Clase Entrenador y su función de conversión desde BD.
+"""
+
+MEDALLAS_MAESTRO = 8
+
+
 class Entrenador:
-    TOTAL_MEDALLAS_JOHTO = 8
+    """Representa a un entrenador de la región Johto."""
 
-    def __init__(self, datos: dict):
-        self.id               = datos.get('id')
-        self.nombre           = datos.get('nombre', '')
-        self.ciudad_origen    = datos.get('ciudad_origen', '')
-        self.edad             = datos.get('edad', 0)
-        self.medallas_ganadas = datos.get('medallas_ganadas', 0)
+    def __init__(self, id, nombre, ciudad_origen, medallas_ganadas):
+        self.id = id
+        self.nombre = nombre
+        self.ciudad_origen = ciudad_origen or "Desconocida"
+        self.medallas_ganadas = medallas_ganadas or 0
 
-    # ── Método 1: verifica si el entrenador es Maestro Pokémon ───────────────
     def es_maestro(self) -> bool:
-        """Un entrenador es Maestro si ganó las 8 medallas de Johto."""
-        return self.medallas_ganadas >= self.TOTAL_MEDALLAS_JOHTO
+        """Un entrenador es Maestro Pokémon si tiene las 8 medallas de Johto."""
+        return self.medallas_ganadas >= MEDALLAS_MAESTRO
 
-    # ── Método 2: calcula el progreso hacia el título de Maestro ─────────────
-    def progreso_medallas(self) -> float:
-        """Devuelve el porcentaje de medallas obtenidas (0.0 – 1.0)."""
-        return min(self.medallas_ganadas / self.TOTAL_MEDALLAS_JOHTO, 1.0)
-
-    # ── Método 3: devuelve una etiqueta de rango ─────────────────────────────
     def rango(self) -> str:
-        m = self.medallas_ganadas
-        if m == 0:
-            return 'Principiante'
-        elif m <= 2:
-            return 'Novato'
-        elif m <= 5:
-            return 'Experimentado'
-        elif m < 8:
-            return 'Avanzado'
+        """Devuelve el rango del entrenador según sus medallas."""
+        if self.medallas_ganadas == 0:
+            return "Novato"
+        elif self.medallas_ganadas <= 2:
+            return "Aprendiz"
+        elif self.medallas_ganadas <= 5:
+            return "Veterano"
+        elif self.medallas_ganadas <= 7:
+            return "Experto"
         else:
-            return '🏆 Maestro Pokémon'
+            return "🏆 Maestro Pokémon"
 
     def __repr__(self):
-        return f"<Entrenador {self.nombre} – {self.medallas_ganadas} medallas>"
+        return f"Entrenador({self.nombre}, medallas={self.medallas_ganadas})"
+
+
+def filas_a_entrenadores(filas: list) -> list:
+    """Convierte una lista de tuplas de BD en objetos Entrenador."""
+    return [
+        Entrenador(id=f[0], nombre=f[1], ciudad_origen=f[2], medallas_ganadas=f[3])
+        for f in filas
+    ]
