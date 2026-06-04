@@ -2,7 +2,7 @@
 modeloPkmn.py — Clase Pokemon y su función de conversión desde BD.
 """
 
-NIVEL_LEGENDARIO = 50
+NIVEL_ESTRELLA = 80
 
 TIPOS_POKEMON = [
     "Agua", "Bicho", "Dragon", "Eléctrico", "Fantasma",
@@ -21,9 +21,9 @@ class Pokemon:
         self.nivel = nivel or 1
         self.entrenador = entrenador  # nombre del entrenador (string) o None
 
-    def es_legendario(self) -> bool:
-        """Un Pokémon se considera legendario si supera el nivel umbral."""
-        return self.nivel >= NIVEL_LEGENDARIO
+    def es_estrella(self) -> bool:
+        """Un Pokémon se considera estrella si supera el nivel umbral."""
+        return self.nivel >= NIVEL_ESTRELLA
 
     def categoria(self) -> str:
         """Clasifica al Pokémon según su nivel de poder."""
@@ -36,7 +36,7 @@ class Pokemon:
         elif self.nivel < 80:
             return "⚡ Élite"
         else:
-            return "🌟 Legendario"
+            return "🌟 estrella"
 
     def esta_libre(self) -> bool:
         """Devuelve True si el Pokémon no pertenece a ningún entrenador."""
