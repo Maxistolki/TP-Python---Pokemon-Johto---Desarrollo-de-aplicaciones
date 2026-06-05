@@ -75,7 +75,7 @@ if seccion == "🏥 Centro Pokémon":
 
     # ── Listar ──────────────────────────────────────────
     with tab_lista:
-        tipos = ["Todos"] + db.obtener_tipos_unicos()
+        tipos = ["Todos"] + db.obtener_tipos_pokemon_unicos()
         filtro_tipo = st.selectbox("Filtrar por tipo", tipos)
 
         filas = db.obtener_pokemon(None if filtro_tipo == "Todos" else filtro_tipo)

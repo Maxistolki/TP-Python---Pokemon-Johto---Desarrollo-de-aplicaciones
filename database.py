@@ -13,7 +13,7 @@ def get_connection():
     return conn
 
 
-def inicializar_db():
+def inicializar_base():
     conn = get_connection()
     cursor = conn.cursor()
 
