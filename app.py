@@ -202,7 +202,7 @@ elif seccion == "🎒 Registro de Entrenadores":
         with st.form("form_nuevo_ent"):
             nombre_ent = st.text_input("Nombre del entrenador")
             ciudad_ent = st.text_input("Ciudad de origen")
-            edad_ent = st.number_input("Edad")
+            edad_ent = st.number_input("Edad",  min_value=0, max_value=120, value=0)
             medallas_ent = st.number_input("Medallas ganadas", min_value=0, max_value=8, value=0)
             
 
@@ -232,7 +232,7 @@ elif seccion == "🎒 Registro de Entrenadores":
             with st.form("form_editar_ent"):
                 nombre_ed = st.text_input("Nombre", value=fila_ent[1])
                 ciudad_ed = st.text_input("Ciudad de origen", value=fila_ent[2] or "")
-                edad_ed = st.number_input("Edad", value=fila_ent[3])
+                edad_ed = st.number_input("Edad", min_value=0, max_value= 120, value=fila_ent[3])
                 medallas_ed = st.number_input("Medallas ganadas", min_value=0, max_value=8,
                                               value=fila_ent[4] or 0)
                 submitted_ed = st.form_submit_button("Guardar cambios")

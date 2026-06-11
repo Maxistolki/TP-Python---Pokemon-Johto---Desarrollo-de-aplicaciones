@@ -12,7 +12,7 @@ class Entrenador:
         self.id = id
         self.nombre = nombre
         self.ciudad_origen = ciudad_origen or "Desconocida"
-        self.edad = edad or 0
+        self.edad = edad
         self.medallas_ganadas = medallas_ganadas or 0
 
     def es_maestro(self) -> bool:
