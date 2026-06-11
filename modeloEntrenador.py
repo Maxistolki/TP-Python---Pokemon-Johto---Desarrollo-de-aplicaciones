@@ -8,10 +8,11 @@ MEDALLAS_MAESTRO = 8
 class Entrenador:
     """Representa a un entrenador de la región Johto."""
 
-    def __init__(self, id, nombre, ciudad_origen, medallas_ganadas):
+    def __init__(self, id, nombre, ciudad_origen, edad, medallas_ganadas):
         self.id = id
         self.nombre = nombre
         self.ciudad_origen = ciudad_origen or "Desconocida"
+        self.edad = edad or 0
         self.medallas_ganadas = medallas_ganadas or 0
 
     def es_maestro(self) -> bool:
@@ -38,6 +39,6 @@ class Entrenador:
 def filas_a_entrenadores(filas: list) -> list:
     """Convierte una lista de tuplas de BD en objetos Entrenador."""
     return [
-        Entrenador(id=f[0], nombre=f[1], ciudad_origen=f[2], medallas_ganadas=f[3])
+        Entrenador(id=f[0], nombre=f[1], ciudad_origen=f[2], edad=f[3], medallas_ganadas=f[4])
         for f in filas
     ]

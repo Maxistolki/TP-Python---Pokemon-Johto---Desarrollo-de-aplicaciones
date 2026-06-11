@@ -114,7 +114,7 @@ def obtener_entrenadores(filtro_ciudad=None):
         cursor.execute("SELECT * FROM entrenadores")
     rows = cursor.fetchall()
     conn.close()
-    return [dict(r) for r in rows]
+    return [tuple(r) for r in rows]
 
 
 def obtener_entrenador_por_id(eid):
@@ -123,7 +123,7 @@ def obtener_entrenador_por_id(eid):
     cursor.execute("SELECT * FROM entrenadores WHERE id = ?", (eid,))
     row = cursor.fetchone()
     conn.close()
-    return dict(row) if row else None
+    return tuple(row) if row else None
 
 
 def crear_entrenador(nombre, ciudad_origen, edad, medallas_ganadas):
@@ -183,7 +183,7 @@ def obtener_pokemon(filtro_tipo=None, filtro_entrenador_id=None):
     cursor.execute(query, params)
     rows = cursor.fetchall()
     conn.close()
-    return [dict(r) for r in rows]
+    return [tuple(r) for r in rows]
 
 
 def obtener_pokemon_por_id(pid):
@@ -192,7 +192,7 @@ def obtener_pokemon_por_id(pid):
     cursor.execute("SELECT * FROM pokemon WHERE id = ?", (pid,))
     row = cursor.fetchone()
     conn.close()
-    return dict(row) if row else None
+    return tuple(row) if row else None
 
 
 def crear_pokemon(nombre_especie, tipo_principal, nivel, id_entrenador):
@@ -247,7 +247,7 @@ def obtener_gimnasios(filtro_tipo=None):
     cursor.execute(query, params)
     rows = cursor.fetchall()
     conn.close()
-    return [dict(r) for r in rows]
+    return [tuple(r) for r in rows]
 
 
 def obtener_gimnasio_por_id(gid):
@@ -256,7 +256,7 @@ def obtener_gimnasio_por_id(gid):
     cursor.execute("SELECT * FROM gimnasios WHERE id = ?", (gid,))
     row = cursor.fetchone()
     conn.close()
-    return dict(row) if row else None
+    return tuple(row) if row else None
 
 
 def crear_gimnasio(nombre_ciudad, lider_nombre, tipo_especialidad, id_entrenador_retador=None):

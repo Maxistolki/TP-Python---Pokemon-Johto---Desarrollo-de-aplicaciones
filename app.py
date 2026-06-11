@@ -92,7 +92,7 @@ if seccion == "🏥 Centro Pokémon":
                     col3.write(f"Nv. {p.nivel}")
                     entrenador_txt = p.entrenador if p.entrenador else "Libre 🌿"
                     col4.write(f"👤 {entrenador_txt}")
-                    st.caption(f"Categoría: {p.categoria()}  |  Legendario: {'✅' if p.es_legendario() else '❌'}")
+                    st.caption(f"Categoría: {p.categoria()}  |  Legendario: {'✅' if p.es_estrella() else '❌'}")
                     st.divider()
 
     # ── Crear ────────────────────────────────────────────
@@ -189,10 +189,11 @@ elif seccion == "🎒 Registro de Entrenadores":
             st.info("No hay entrenadores con ese filtro.")
         else:
             for e in entrenadores:
-                col1, col2, col3 = st.columns([3, 2, 3])
+                col1, col2, col3, col4 =  st.columns(4)
                 col1.markdown(f"**{e.nombre}** `#{e.id}`")
                 col2.write(f"📍 {e.ciudad_origen}")
-                col3.write(f"🎖️ {e.medallas_ganadas} medallas — {e.rango()}")
+                col3.write(f"edad {e.edad}")
+                col4.write(f"🎖️ {e.medallas_ganadas} medallas — {e.rango()}")
                 st.divider()
 
     # ── Crear ────────────────────────────────────────────
@@ -201,7 +202,9 @@ elif seccion == "🎒 Registro de Entrenadores":
         with st.form("form_nuevo_ent"):
             nombre_ent = st.text_input("Nombre del entrenador")
             ciudad_ent = st.text_input("Ciudad de origen")
+            edad_ent = st.number_input("Edad")
             medallas_ent = st.number_input("Medallas ganadas", min_value=0, max_value=8, value=0)
+            
 
             submitted_ent = st.form_submit_button("Registrar Entrenador")
             if submitted_ent:
@@ -210,7 +213,7 @@ elif seccion == "🎒 Registro de Entrenadores":
                 elif not ciudad_ent.strip():
                     st.error("La ciudad de origen no puede estar vacía.")
                 else:
-                    db.crear_entrenador(nombre_ent.strip(), ciudad_ent.strip(), medallas_ent)
+                    db.crear_entrenador(nombre_ent.strip(), ciudad_ent.strip(), edad_ent, medallas_ent)
                     st.success(f"✅ Entrenador {nombre_ent} registrado.")
                     st.rerun()
 
@@ -229,8 +232,9 @@ elif seccion == "🎒 Registro de Entrenadores":
             with st.form("form_editar_ent"):
                 nombre_ed = st.text_input("Nombre", value=fila_ent[1])
                 ciudad_ed = st.text_input("Ciudad de origen", value=fila_ent[2] or "")
+                edad_ed = st.number_input("Edad", value=fila_ent[3])
                 medallas_ed = st.number_input("Medallas ganadas", min_value=0, max_value=8,
-                                              value=fila_ent[3] or 0)
+                                              value=fila_ent[4] or 0)
                 submitted_ed = st.form_submit_button("Guardar cambios")
                 if submitted_ed:
                     if not nombre_ed.strip():
@@ -238,7 +242,7 @@ elif seccion == "🎒 Registro de Entrenadores":
                     elif not ciudad_ed.strip():
                         st.error("La ciudad no puede estar vacía.")
                     else:
-                        db.actualizar_entrenador(id_ent_ed, nombre_ed.strip(), ciudad_ed.strip(), medallas_ed)
+                        db.actualizar_entrenador(id_ent_ed, nombre_ed.strip(), ciudad_ed.strip(), edad_ed, medallas_ed)
                         st.success("✅ Entrenador actualizado.")
                         st.rerun()
 
