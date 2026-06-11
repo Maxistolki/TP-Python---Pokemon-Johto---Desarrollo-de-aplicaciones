@@ -88,11 +88,11 @@ if seccion == "🏥 Centro Pokémon":
                 with st.container():
                     col1, col2, col3, col4 = st.columns([3, 2, 1, 2])
                     col1.markdown(f"**{p.nombre_especie}** `#{p.id}`")
-                    col2.write(f"🔖 {p.tipo_principal}")
+                    col2.write(f"{p.tipo_principal}")
                     col3.write(f"Nv. {p.nivel}")
                     entrenador_txt = p.entrenador if p.entrenador else "Libre 🌿"
                     col4.write(f"👤 {entrenador_txt}")
-                    st.caption(f"Categoría: {p.categoria()}  |  Legendario: {'✅' if p.es_estrella() else '❌'}")
+                    st.caption(f"Categoría: {p.categoria()}  |  Estrella: {'✅' if p.es_estrella() else '❌'}")
                     st.divider()
 
     # ── Crear ────────────────────────────────────────────

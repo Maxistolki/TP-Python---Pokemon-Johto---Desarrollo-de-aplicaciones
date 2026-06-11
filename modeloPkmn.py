@@ -36,7 +36,7 @@ class Pokemon:
         elif self.nivel < 80:
             return "⚡ Élite"
         else:
-            return "🌟 estrella"
+            return "🌟 Estrella"
 
     def esta_libre(self) -> bool:
         """Devuelve True si el Pokémon no pertenece a ningún entrenador."""
