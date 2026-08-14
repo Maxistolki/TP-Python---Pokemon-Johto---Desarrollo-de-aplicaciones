@@ -10,6 +10,6 @@ from modeloGimnacio import Gimnasio, filas_a_gimnasios
 
 __all__ = [
     "Entrenador", "filas_a_entrenadores", "MEDALLAS_MAESTRO",
-    "Pokemon",    "filas_a_pokemon",      "TIPOS_POKEMON", "NIVEL_LEGENDARIO",
+    "Pokemon",    "filas_a_pokemon",      "TIPOS_POKEMON", "NIVEL_ESTRELLA",
     "Gimnasio",   "filas_a_gimnasios",
 ]
