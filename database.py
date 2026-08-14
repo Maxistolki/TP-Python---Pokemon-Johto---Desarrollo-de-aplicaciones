@@ -1,4 +1,5 @@
 import sqlite3
+import pandas as pd
 
 DB_PATH = 'region_johto.db'
 
@@ -289,6 +290,29 @@ def eliminar_gimnasio(gid):
     cursor.execute("DELETE FROM gimnasios WHERE id = ?", (gid,))
     conn.commit()
     conn.close()
+
+
+# ─────────────────────────────────────────────
+# IMPORTACIÓN CSV Y ESTADÍSTICAS (Pandas)
+# ─────────────────────────────────────────────
+
+def importar_pokemon_desde_csv(ruta_csv):
+    """Lee un CSV con columnas nombre_especie, tipo_principal, nivel, id_entrenador
+    y da de alta cada fila usando crear_pokemon(). Devuelve la cantidad importada."""
+    df = pd.read_csv(ruta_csv)
+    for _, fila in df.iterrows():
+        id_ent = fila['id_entrenador']
+        id_ent = None if pd.isna(id_ent) else int(id_ent)
+        crear_pokemon(fila['nombre_especie'], fila['tipo_principal'], int(fila['nivel']), id_ent)
+    return len(df)
+
+
+def obtener_pokemon_dataframe():
+    """Devuelve todos los Pokémon registrados en la base como DataFrame de pandas."""
+    conn = get_connection()
+    df = pd.read_sql("SELECT * FROM pokemon", conn)
+    conn.close()
+    return df
 
 
 # ─────────────────────────────────────────────

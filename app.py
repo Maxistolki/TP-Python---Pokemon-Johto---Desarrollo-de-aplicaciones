@@ -59,7 +59,7 @@ st.divider()
 # ─────────────────────────────────────────────
 seccion = st.sidebar.radio(
     "Navegación",
-    ["🏥 Centro Pokémon", "🎒 Registro de Entrenadores", "🏟️ Red de Gimnasios"],
+    ["🏥 Centro Pokémon", "🎒 Registro de Entrenadores", "🏟️ Red de Gimnasios", "📊 Estadísticas"],
     index=0,
 )
 
@@ -69,8 +69,8 @@ seccion = st.sidebar.radio(
 if seccion == "🏥 Centro Pokémon":
     st.subheader("🏥 Centro Pokémon — Gestión de Especímenes")
 
-    tab_lista, tab_nuevo, tab_editar, tab_borrar = st.tabs(
-        ["📋 Ver Pokémon", "➕ Registrar", "✏️ Editar", "🗑️ Eliminar"]
+    tab_lista, tab_nuevo, tab_editar, tab_borrar, tab_importar = st.tabs(
+        ["📋 Ver Pokémon", "➕ Registrar", "✏️ Editar", "🗑️ Eliminar", "📥 Importar CSV"]
     )
 
     # ── Listar ──────────────────────────────────────────
@@ -166,6 +166,19 @@ if seccion == "🏥 Centro Pokémon":
                 db.eliminar_pokemon(opciones_d[sel_d])
                 st.success("Pokémon eliminado del registro.")
                 st.rerun()
+
+    # ── Importar CSV ─────────────────────────────────────
+    with tab_importar:
+        st.markdown("#### Importar dataset de Pokémon desde CSV")
+        st.caption("Archivo esperado: `pokemon_johto.csv` con columnas "
+                   "nombre_especie, tipo_principal, nivel, id_entrenador.")
+        if st.button("📥 Importar pokemon_johto.csv"):
+            try:
+                cantidad = db.importar_pokemon_desde_csv("pokemon_johto.csv")
+                st.success(f"✅ Se importaron {cantidad} Pokémon desde el CSV.")
+                st.rerun()
+            except FileNotFoundError:
+                st.error("No se encontró el archivo pokemon_johto.csv en el directorio del proyecto.")
 
 # ═══════════════════════════════════════════════════════
 # SECCIÓN 2 — ENTRENADORES
@@ -362,3 +375,46 @@ elif seccion == "🏟️ Red de Gimnasios":
                 db.eliminar_gimnasio(opciones_gym_d[sel_gym_d])
                 st.success("Gimnasio eliminado del registro.")
                 st.rerun()
+
+# ═══════════════════════════════════════════════════════
+# SECCIÓN 4 — ESTADÍSTICAS
+# ═══════════════════════════════════════════════════════
+elif seccion == "📊 Estadísticas":
+    st.subheader("📊 Estadísticas — Tendencia central de niveles Pokémon")
+
+    df_pkmn = db.obtener_pokemon_dataframe()
+
+    if df_pkmn.empty:
+        st.info("No hay Pokémon registrados todavía para calcular estadísticas.")
+    else:
+        media = df_pkmn["nivel"].mean()
+        mediana = df_pkmn["nivel"].median()
+        moda = df_pkmn["nivel"].mode()
+        moda_txt = ", ".join(str(int(v)) for v in moda) if not moda.empty else "N/D"
+
+        col1, col2, col3 = st.columns(3)
+        col1.metric("Media", f"{media:.2f}")
+        col2.metric("Mediana", f"{mediana:.2f}")
+        col3.metric("Moda", moda_txt)
+
+        st.divider()
+
+        if abs(media - mediana) < 2:
+            comparacion = ("la media y la mediana son bastante parecidas, lo que sugiere una distribución "
+                           "de niveles relativamente simétrica")
+        elif media < mediana:
+            comparacion = ("la media es menor que la mediana, lo que sugiere que hay algunos Pokémon de nivel "
+                           "bajo arrastrando el promedio hacia abajo")
+        else:
+            comparacion = ("la media es mayor que la mediana, lo que sugiere que hay algunos Pokémon de nivel "
+                           "alto arrastrando el promedio hacia arriba")
+
+        if len(moda) == 1:
+            moda_desc = f"el nivel {moda_txt} es el más frecuente entre los Pokémon registrados"
+        else:
+            moda_desc = f"hay varios niveles empatados como más frecuentes ({moda_txt}), sin una moda dominante"
+
+        st.markdown(
+            f"**Interpretación:** sobre un total de **{len(df_pkmn)}** Pokémon registrados, {comparacion}. "
+            f"Además, {moda_desc}."
+        )
